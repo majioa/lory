@@ -148,6 +148,10 @@ export function lory (slider, opts) {
             nextCtrl.classList.remove('disabled');
         }
 
+        if (typeof nextIndex === 'string' && nextIndex.match(/^\d+$/)) {
+            nextIndex = parseInt(nextIndex);
+        }
+
         if (typeof nextIndex !== 'number') {
             if (direction) {
                 nextIndex = index + slidesToScroll;
