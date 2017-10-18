@@ -116,8 +116,9 @@ export function lory (slider, opts) {
      * under restrictions of the defined options
      *
      * @direction  {boolean}
+     * @duration   {number} time in milliseconds for the transistion of slides
      */
-    function slide (nextIndex, direction) {
+    function slide (nextIndex, direction, duration) {
         const {
             slideSpeed,
             slidesToScroll,
@@ -128,7 +129,9 @@ export function lory (slider, opts) {
             classNameActiveSlide
         } = options;
 
-        let duration = slideSpeed;
+        if (typeof duration !== 'number') {
+            duration = slideSpeed;
+        }
 
         const nextSlide = direction ? index + 1 : index - 1;
         const maxOffset = Math.round(slidesWidth - frameWidth);
@@ -338,9 +341,12 @@ export function lory (slider, opts) {
     /**
      * public
      * slideTo: called on clickhandler
+     *
+     * @index      {number or string} an index of the slide to scroll
+     * @duration   {number} time in milliseconds for the transistion of slides
      */
-    function slideTo (index) {
-        slide(index);
+    function slideTo (index, duration) {
+        slide(index, undefined, duration);
     }
 
     /**
