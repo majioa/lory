@@ -88,6 +88,15 @@ export function lory (slider, opts) {
     }
 
     /**
+     * [getFrameWidth]
+     * @return {number} [width of the frame]
+     */
+    function getFrameWidth () {
+        frameWidth = frame.getBoundingClientRect().width || frame.offsetWidth;
+        return frameWidth;
+    }
+
+    /**
      * translates to a given position in a given time in milliseconds
      *
      * @to        {number} number in pixels where to translate to
@@ -134,7 +143,7 @@ export function lory (slider, opts) {
         }
 
         const nextSlide = direction ? index + 1 : index - 1;
-        const maxOffset = Math.round(slidesWidth - frameWidth);
+        const maxOffset = Math.round(slidesWidth - getFrameWidth());
 
         dispatchSliderEvent('before', 'slide', {
             index,
@@ -307,8 +316,7 @@ export function lory (slider, opts) {
 
         slidesWidth = slideContainer.getBoundingClientRect()
             .width || slideContainer.offsetWidth;
-        frameWidth = frame.getBoundingClientRect()
-            .width || frame.offsetWidth;
+        frameWidth = getFrameWidth()
 
         if (frameWidth === slidesWidth) {
             slidesWidth = slides.reduce(function (previousValue, slide) {
