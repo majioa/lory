@@ -79,7 +79,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _dispatchEvent2 = _interopRequireDefault(_dispatchEvent);
 	
-	var _defaults = __webpack_require__(5);
+	var _defaults = __webpack_require__(4);
 	
 	var _defaults2 = _interopRequireDefault(_defaults);
 	
@@ -172,6 +172,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	
 	    /**
+	     * [getFrameWidth]
+	     * @return {number} [width of the frame]
+	     */
+	    function getFrameWidth() {
+	        frameWidth = frame.getBoundingClientRect().width || frame.offsetWidth;
+	        return frameWidth;
+	    }
+	
+	    /**
 	     * translates to a given position in a given time in milliseconds
 	     *
 	     * @to        {number} number in pixels where to translate to
@@ -200,8 +209,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * under restrictions of the defined options
 	     *
 	     * @direction  {boolean}
+	     * @duration   {number} time in milliseconds for the transistion of slides
 	     */
-	    function slide(nextIndex, direction) {
+	    function slide(nextIndex, direction, duration) {
 	        var _options3 = options,
 	            slideSpeed = _options3.slideSpeed,
 	            slidesToScroll = _options3.slidesToScroll,
@@ -212,10 +222,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	            classNameActiveSlide = _options3.classNameActiveSlide;
 	
 	
-	        var duration = slideSpeed;
+	        if (typeof duration !== 'number') {
+	            duration = slideSpeed;
+	        }
 	
 	        var nextSlide = direction ? index + 1 : index - 1;
-	        var maxOffset = Math.round(slidesWidth - frameWidth);
+	        var maxOffset = Math.round(slidesWidth - getFrameWidth());
 	
 	        dispatchSliderEvent('before', 'slide', {
 	            index: index,
@@ -230,6 +242,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        if (nextCtrl) {
 	            nextCtrl.classList.remove('disabled');
+	        }
+	
+	        if (typeof nextIndex === 'string' && nextIndex.match(/^\d+$/)) {
+	            nextIndex = parseInt(nextIndex);
 	        }
 	
 	        if (typeof nextIndex !== 'number') {
@@ -389,7 +405,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	
 	        slidesWidth = slideContainer.getBoundingClientRect().width || slideContainer.offsetWidth;
-	        frameWidth = frame.getBoundingClientRect().width || frame.offsetWidth;
+	        frameWidth = getFrameWidth();
 	
 	        if (frameWidth === slidesWidth) {
 	            slidesWidth = slides.reduce(function (previousValue, slide) {
@@ -422,9 +438,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     * public
 	     * slideTo: called on clickhandler
+	     *
+	     * @index      {number or string} an index of the slide to scroll
+	     * @duration   {number} time in milliseconds for the transistion of slides
 	     */
-	    function slideTo(index) {
-	        slide(index);
+	    function slideTo(index, duration) {
+	        slide(index, undefined, duration);
 	    }
 	
 	    /**
@@ -714,22 +733,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 3 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	'use strict';
+	"use strict";
 	
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
 	exports.default = dispatchEvent;
-	
-	var _customEvent = __webpack_require__(4);
-	
-	var _customEvent2 = _interopRequireDefault(_customEvent);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
 	/**
+	 * to use CustomEvent you have to require/import CustomEvent from custom-event or
+	 * custom-event-polyfill packages in case it is not defined explicitly.
+	 * Example:
+	 *
+	 * `import CustomEvent from 'custom-event';`
+	 *
 	 * dispatch custom events
 	 *
 	 * @param  {element} el         slideshow element
@@ -737,7 +755,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param  {object}  detail     custom detail information
 	 */
 	function dispatchEvent(target, type, detail) {
-	    var event = new _customEvent2.default(type, {
+	    var event = new CustomEvent(type, {
 	        bubbles: true,
 	        cancelable: true,
 	        detail: detail
@@ -748,61 +766,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 4 */
-/***/ function(module, exports) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {
-	var NativeCustomEvent = global.CustomEvent;
-	
-	function useNative () {
-	  try {
-	    var p = new NativeCustomEvent('cat', { detail: { foo: 'bar' } });
-	    return  'cat' === p.type && 'bar' === p.detail.foo;
-	  } catch (e) {
-	  }
-	  return false;
-	}
-	
-	/**
-	 * Cross-browser `CustomEvent` constructor.
-	 *
-	 * https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent.CustomEvent
-	 *
-	 * @public
-	 */
-	
-	module.exports = useNative() ? NativeCustomEvent :
-	
-	// IE >= 9
-	'undefined' !== typeof document && 'function' === typeof document.createEvent ? function CustomEvent (type, params) {
-	  var e = document.createEvent('CustomEvent');
-	  if (params) {
-	    e.initCustomEvent(type, params.bubbles, params.cancelable, params.detail);
-	  } else {
-	    e.initCustomEvent(type, false, false, void 0);
-	  }
-	  return e;
-	} :
-	
-	// IE <= 8
-	function CustomEvent (type, params) {
-	  var e = document.createEventObject();
-	  e.type = type;
-	  if (params) {
-	    e.bubbles = Boolean(params.bubbles);
-	    e.cancelable = Boolean(params.cancelable);
-	    e.detail = params.detail;
-	  } else {
-	    e.bubbles = false;
-	    e.cancelable = false;
-	    e.detail = void 0;
-	  }
-	  return e;
-	}
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 5 */
 /***/ function(module, exports) {
 
 	'use strict';
