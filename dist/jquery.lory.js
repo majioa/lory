@@ -692,7 +692,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 2 */
 /***/ function(module, exports) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
+	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
@@ -737,7 +737,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	        document.body.insertBefore(el, null);
 	        style[transform] = 'translate3d(0, 0, 0)';
-	        hasTranslate3d = !!global.getComputedStyle(el).getPropertyValue(transform);
+	        hasTranslate3d = !!getComputedStyle(el).getPropertyValue(transform);
 	        document.body.removeChild(el);
 	    })();
 	
@@ -748,7 +748,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        hasTranslate3d: hasTranslate3d
 	    };
 	}
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
 /* 3 */

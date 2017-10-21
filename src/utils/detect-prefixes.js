@@ -37,7 +37,7 @@ export default function detectPrefixes () {
 
         document.body.insertBefore(el, null);
         style[transform] = 'translate3d(0, 0, 0)';
-        hasTranslate3d = !!global.getComputedStyle(el).getPropertyValue(transform);
+        hasTranslate3d = !!getComputedStyle(el).getPropertyValue(transform);
         document.body.removeChild(el);
     }());
 
