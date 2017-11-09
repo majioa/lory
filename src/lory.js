@@ -92,7 +92,7 @@ export function lory (slider, opts) {
      * @return {number} [width of the frame]
      */
     function getFrameWidth () {
-        frameWidth = frame.getBoundingClientRect().width || frame.offsetWidth;
+        frameWidth = Math.max(frame.clientWidth, frame.getBoundingClientRect().width || frame.offsetWidth);
         return frameWidth;
     }
 
